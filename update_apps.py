@@ -429,7 +429,7 @@ def main():
         except Exception as e:
             log(f"{app['name']}: unexpected error - {e}", "ERROR")
 
-    # Run build_app_versions.py for updated apps
+    # Run build_app_versions.py and build_catalog.py for updated apps
     if updated_paths and not args.dry_run:
         log(f"Updating app_versions.json for {len(updated_paths)} app(s)...")
         try:
@@ -439,6 +439,15 @@ def main():
             )
         except subprocess.CalledProcessError as e:
             log(f"build_app_versions.py failed: {e}", "ERROR")
+
+        log("Updating catalog.json...")
+        try:
+            subprocess.run(
+                [sys.executable, str(REPO_ROOT / "build_catalog.py")],
+                cwd=REPO_ROOT, check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            log(f"build_catalog.py failed: {e}", "ERROR")
 
     # Summary
     print()

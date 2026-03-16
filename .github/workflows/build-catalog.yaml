@@ -29,8 +29,11 @@ jobs:
           python-version: '3.11'
 
       - name: Run build_app_versions.py
-        run: |
-          python3 build_app_versions.py
+        run: python3 build_app_versions.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Run build_catalog.py
+        run: python3 build_catalog.py
         working-directory: ${{ github.workspace }}
 
       - name: Check for changes
@@ -42,12 +45,12 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push app_versions.json updates
+      - name: Commit and push catalog updates
         if: steps.changes.outputs.changed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add stable/*/app_versions.json incubator/*/app_versions.json system/*/app_versions.json 2>/dev/null || true
+          git add stable/*/app_versions.json incubator/*/app_versions.json system/*/app_versions.json catalog.json 2>/dev/null || true
           git status
-          git commit -m "chore: update app_versions.json for new chart versions"
+          git commit -m "chore: update app_versions.json and catalog.json"
           git push
