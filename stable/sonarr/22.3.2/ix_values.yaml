@@ -92,4 +92,10 @@ metrics:
 portal:
   open:
     enabled: true
+securityContext:
+  container:
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+    runAsUser: 0
+    runAsGroup: 0
 updated: true
