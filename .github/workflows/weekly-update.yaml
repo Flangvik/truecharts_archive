@@ -1,10 +1,10 @@
 # Auto-update TrueCharts apps to latest upstream versions
-# Runs weekly on Monday at 06:00 UTC, or manually via workflow_dispatch
-name: Weekly App Updates
+# Runs daily at 06:00 UTC, or manually via workflow_dispatch
+name: Daily App Updates
 
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 jobs:
