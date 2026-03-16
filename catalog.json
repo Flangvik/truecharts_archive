@@ -25308,6 +25308,38 @@
                 "https://hub.docker.com/r/zwavejs/zwave-js-ui"
             ],
             "icon_url": "https://truecharts.org/img/hotlink-ok/chart-icons/zwavejs2mqtt.webp"
+        },
+        "threadfin": {
+            "name": "threadfin",
+            "description": "An M3U proxy for Plex, Jellyfin, and Emby based on xTeVe",
+            "healthy": true,
+            "healthy_error": null,
+            "home": "https://truecharts.org/charts/stable/threadfin",
+            "location": "/home/runner/_work/catalog/catalog/stable/threadfin",
+            "latest_version": "1.0.0",
+            "latest_app_version": "1.2.37",
+            "latest_human_version": "1.2.37_1.0.0",
+            "last_update": "2026-03-16 10:51:57",
+            "recommended": false,
+            "tags": [],
+            "screenshots": [],
+            "app_readme": "<p>An M3U proxy for Plex, Jellyfin, and Emby based on xTeVe</p>\n<p>This App is supplied by TrueCharts, for more information visit the manual: <a href=\"https://truecharts.org/charts/stable/threadfin\">https://truecharts.org/charts/stable/threadfin</a></p>\n<hr />\n<p>TrueCharts can only exist due to the incredible effort of our staff.\nPlease consider making a <a href=\"https://truecharts.org/sponsor\">donation</a> or contributing back to the project any way you can!</p>",
+            "title": "Threadfin",
+            "sources": [
+                "https://github.com/Threadfin/Threadfin",
+                "https://hub.docker.com/r/fyb3roptik/threadfin"
+            ],
+            "maintainers": [
+                {
+                    "name": "TrueCharts",
+                    "email": "info@truecharts.org",
+                    "url": "https://truecharts.org"
+                }
+            ],
+            "icon_url": "https://truecharts.org/img/hotlink-ok/chart-icons/threadfin.webp",
+            "categories": [
+                "media"
+            ]
         }
     },
     "system": {

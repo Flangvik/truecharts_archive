@@ -31,6 +31,7 @@ A daily GitHub Actions cron job ([`update_apps.py`](update_apps.py)):
 | Ombi | linuxserver/ombi |
 | SABnzbd | ghcr.io/home-operations/sabnzbd |
 | FlareSolverr | ghcr.io/flaresolverr/flaresolverr |
+| Threadfin | fyb3roptik/threadfin |
 | qBittorrent | oci.trueforge.org/containerforge/qbittorrent |
 
 Radarr, Sonarr, Prowlarr, and Lidarr use `rolling` image tags and auto-update via container restart.

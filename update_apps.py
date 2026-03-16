@@ -118,6 +118,14 @@ APPS = [
         "github_repo": "FlareSolverr/FlareSolverr",
     },
     {
+        "name": "threadfin",
+        "path": "stable/threadfin",
+        "image_repo": "fyb3roptik/threadfin",
+        "tag_format": "{version}",
+        "version_source": "github_release",
+        "github_repo": "Threadfin/Threadfin",
+    },
+    {
         "name": "qbittorrent",
         "path": "stable/qbittorrent",
         "image_repo": "oci.trueforge.org/containerforge/qbittorrent",
