@@ -118,6 +118,14 @@ APPS = [
         "github_repo": "FlareSolverr/FlareSolverr",
     },
     {
+        "name": "seerr",
+        "path": "stable/seerr",
+        "image_repo": "seerr/seerr",
+        "tag_format": "v{version}",
+        "version_source": "github_release",
+        "github_repo": "seerr-team/seerr",
+    },
+    {
         "name": "threadfin",
         "path": "stable/threadfin",
         "image_repo": "fyb3roptik/threadfin",

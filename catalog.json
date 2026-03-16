@@ -25340,6 +25340,38 @@
             "categories": [
                 "media"
             ]
+        },
+        "seerr": {
+            "name": "seerr",
+            "description": "A media request manager for Jellyfin, Plex, and Emby with Sonarr and Radarr integration",
+            "healthy": true,
+            "healthy_error": null,
+            "home": "https://truecharts.org/charts/stable/seerr",
+            "location": "/home/runner/_work/catalog/catalog/stable/seerr",
+            "latest_version": "1.0.0",
+            "latest_app_version": "3.1.0",
+            "latest_human_version": "3.1.0_1.0.0",
+            "last_update": "2026-03-16 11:00:19",
+            "recommended": false,
+            "tags": [],
+            "screenshots": [],
+            "app_readme": "<p>A media request manager for Jellyfin, Plex, and Emby with Sonarr and Radarr integration</p>\n<p>This App is supplied by TrueCharts, for more information visit the manual: <a href=\"https://truecharts.org/charts/stable/seerr\">https://truecharts.org/charts/stable/seerr</a></p>\n<hr />\n<p>TrueCharts can only exist due to the incredible effort of our staff.\nPlease consider making a <a href=\"https://truecharts.org/sponsor\">donation</a> or contributing back to the project any way you can!</p>",
+            "title": "Seerr",
+            "sources": [
+                "https://github.com/seerr-team/seerr",
+                "https://hub.docker.com/r/seerr/seerr"
+            ],
+            "maintainers": [
+                {
+                    "name": "TrueCharts",
+                    "email": "info@truecharts.org",
+                    "url": "https://truecharts.org"
+                }
+            ],
+            "icon_url": "https://truecharts.org/img/hotlink-ok/chart-icons/seerr.webp",
+            "categories": [
+                "media"
+            ]
         }
     },
     "system": {
