@@ -91,7 +91,19 @@ def build_version_entry(
     if location_base:
         entry["location"] = f"{location_base}/{train}/{app_name}/{chart_version}"
     else:
-        entry["location"] = f"{train}/{app_name}/{chart_version}"
+        # Infer location_base from template's existing location field
+        # TrueNAS requires absolute paths matching ^(/[a-zA-Z0-9_.-]+)+$
+        tmpl_loc = template.get("location", "")
+        # e.g. "/home/runner/_work/catalog/catalog/stable/plex/18.3.7"
+        # strip the trailing "/{train}/{app_name}/{old_version}" to get the base
+        suffix = f"/{train}/{app_name}/"
+        idx = tmpl_loc.find(suffix)
+        if idx >= 0:
+            inferred_base = tmpl_loc[:idx]
+            entry["location"] = f"{inferred_base}/{train}/{app_name}/{chart_version}"
+        else:
+            # Fallback: use the same base as official TrueCharts catalog
+            entry["location"] = f"/home/runner/_work/catalog/catalog/{train}/{app_name}/{chart_version}"
 
     entry["last_update"] = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 

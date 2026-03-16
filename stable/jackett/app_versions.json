@@ -3,7 +3,7 @@
         "healthy": true,
         "supported": true,
         "healthy_error": null,
-        "location": "stable/jackett/21.8.10",
+        "location": "/home/runner/_work/catalog/catalog/stable/jackett/21.8.10",
         "last_update": "2026-03-16 10:10:54",
         "required_features": [
             "definitions/timezone",
@@ -5279,7 +5279,7 @@
         "healthy": true,
         "supported": true,
         "healthy_error": null,
-        "location": "stable/jackett/21.8.9",
+        "location": "/home/runner/_work/catalog/catalog/stable/jackett/21.8.9",
         "last_update": "2026-02-07 11:22:15",
         "required_features": [
             "definitions/timezone",

@@ -3,7 +3,7 @@
         "healthy": true,
         "supported": true,
         "healthy_error": null,
-        "location": "stable/ombi/19.1.2",
+        "location": "/home/runner/_work/catalog/catalog/stable/ombi/19.1.2",
         "last_update": "2026-02-07 11:22:15",
         "required_features": [
             "definitions/timezone",
