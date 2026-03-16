@@ -31,6 +31,7 @@ A daily GitHub Actions cron job ([`update_apps.py`](update_apps.py)):
 | Ombi | linuxserver/ombi |
 | SABnzbd | ghcr.io/home-operations/sabnzbd |
 | FlareSolverr | ghcr.io/flaresolverr/flaresolverr |
+| Sonarr | linuxserver/sonarr |
 | Seerr | seerr/seerr |
 | Threadfin | fyb3roptik/threadfin |
 | qBittorrent | oci.trueforge.org/containerforge/qbittorrent |

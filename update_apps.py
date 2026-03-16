@@ -118,6 +118,14 @@ APPS = [
         "github_repo": "FlareSolverr/FlareSolverr",
     },
     {
+        "name": "sonarr",
+        "path": "stable/sonarr",
+        "image_repo": "linuxserver/sonarr",
+        "tag_format": "{version}",
+        "version_source": "github_release",
+        "github_repo": "Sonarr/Sonarr",
+    },
+    {
         "name": "seerr",
         "path": "stable/seerr",
         "image_repo": "seerr/seerr",
