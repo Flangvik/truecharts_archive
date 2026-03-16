@@ -1,0 +1,65 @@
+# Auto-update TrueCharts apps to latest upstream versions
+# Runs weekly on Monday at 06:00 UTC, or manually via workflow_dispatch
+name: Weekly App Updates
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-apps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run update script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 update_apps.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build commit message
+        if: steps.changes.outputs.changed == 'true'
+        id: message
+        run: |
+          # Extract app names and versions from new Chart.yaml files
+          MSG=$(git diff --name-only; git ls-files --others --exclude-standard | \
+            grep 'Chart.yaml' | while read f; do
+              app=$(echo "$f" | cut -d/ -f2)
+              ver=$(grep '^appVersion:' "$f" | head -1 | awk '{print $2}')
+              echo "${app} ${ver}"
+            done | sort -u | paste -sd', ' -)
+          echo "msg=Update ${MSG}" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "${{ steps.message.outputs.msg }}"
+          git push
