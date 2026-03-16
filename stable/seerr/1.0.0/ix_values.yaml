@@ -6,7 +6,7 @@ service:
   main:
     ports:
       main:
-        port: 5055
+        port: 5056
         targetPort: 5055
 persistence:
   config:
