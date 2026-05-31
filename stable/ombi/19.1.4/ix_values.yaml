@@ -1,0 +1,32 @@
+image:
+  repository: "linuxserver/ombi"
+  pullPolicy: "IfNotPresent"
+  tag: "4.53.10@sha256:12e3e4171cd6dd6f8502880608d7bd0a3d50e5e82d15e470dc7ebf602b7c2b7f"
+service:
+  main:
+    ports:
+      main:
+        port: 3579
+        targetPort: 3579
+persistence:
+  config:
+    enabled: true
+    mountPath: "/config"
+# Enabled mariadb
+# ... for more options see https://github.com/tccr.io/truecharts/charts/tree/master/tccr.io/truecharts/mariadb
+mariadb:
+  enabled: false
+  architecture: standalone
+  auth:
+    database: ombi
+    username: ombi
+    password: ombi
+  primary:
+    persistence:
+      enabled: false
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
