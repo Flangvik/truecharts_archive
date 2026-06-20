@@ -1,5 +1,5 @@
 image:
-  repository: oci.trueforge.org/containerforge/qbittorrent
+  repository: ghcr.io/home-operations/qbittorrent
   pullPolicy: IfNotPresent
   tag: "5.2.2"
 qbitportforwardImage:

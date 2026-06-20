@@ -148,14 +148,18 @@ APPS = [
         "github_repo": "Threadfin/Threadfin",
     },
     {
+        # qBittorrent's chart runs the rootless ghcr.io/home-operations image
+        # (that's what the working install uses). The old oci.trueforge.org
+        # registry lags upstream (e.g. missing 5.2.2), so upgrading to the latest
+        # GitHub release ErrImagePulls and the pod fails to start. Query
+        # home-operations' own published tags instead (same approach as plex).
         "name": "qbittorrent",
         "path": "stable/qbittorrent",
-        "image_repo": "oci.trueforge.org/containerforge/qbittorrent",
+        "image_repo": "ghcr.io/home-operations/qbittorrent",
         "tag_format": "{version}",
-        "version_source": "github_tags",
-        "github_repo": "qbittorrent/qBittorrent",
-        "github_tag_prefix": "release-",
-        "skip_digest": True,
+        "version_source": "ghcr_tags",
+        "ghcr_repo": "home-operations/qbittorrent",
+        "tag_pattern": r"^\d+\.\d+\.\d+$",
     },
 ]
 
