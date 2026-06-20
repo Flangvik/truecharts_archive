@@ -118,12 +118,18 @@ APPS = [
         "github_repo": "FlareSolverr/FlareSolverr",
     },
     {
+        # Sonarr's chart is the rootless generation (uses SONARR__* env), so it
+        # needs the rootless ghcr.io/home-operations image, NOT linuxserver (which
+        # must start as root and breaks the chart's non-root securityContext).
+        # home-operations tags by its own build number, so query the registry
+        # directly (same approach as plex) instead of the GitHub release version.
         "name": "sonarr",
         "path": "stable/sonarr",
-        "image_repo": "linuxserver/sonarr",
+        "image_repo": "ghcr.io/home-operations/sonarr",
         "tag_format": "{version}",
-        "version_source": "github_release",
-        "github_repo": "Sonarr/Sonarr",
+        "version_source": "ghcr_tags",
+        "ghcr_repo": "home-operations/sonarr",
+        "tag_pattern": r"^\d+\.\d+\.\d+\.\d+$",
     },
     {
         "name": "seerr",

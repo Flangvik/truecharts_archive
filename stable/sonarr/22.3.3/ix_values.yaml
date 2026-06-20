@@ -1,7 +1,7 @@
 image:
-  repository: "linuxserver/sonarr"
+  repository: "ghcr.io/home-operations/sonarr"
   pullPolicy: "IfNotPresent"
-  tag: "4.0.17.2952"
+  tag: "4.0.17.2969"
 exportarrImage:
   repository: ghcr.io/onedr0p/exportarr
   pullPolicy: IfNotPresent
@@ -92,10 +92,4 @@ metrics:
 portal:
   open:
     enabled: true
-securityContext:
-  container:
-    runAsNonRoot: false
-    readOnlyRootFilesystem: false
-    runAsUser: 0
-    runAsGroup: 0
 updated: true
