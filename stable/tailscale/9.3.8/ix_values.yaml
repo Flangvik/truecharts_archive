@@ -1,7 +1,7 @@
 image:
   repository: "docker.io/tailscale/tailscale"
   pullPolicy: "IfNotPresent"
-  tag: "v1.98.5"
+  tag: "v1.98.4"
 serviceAccount:
   main:
     enabled: true

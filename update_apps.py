@@ -320,6 +320,50 @@ def get_image_digest(image_repo, tag):
     return digest
 
 
+def image_exists(image_repo, tag):
+    """Check that image_repo:tag is actually published.
+
+    Returns True (exists), False (definitively missing / 404), or None (lookup
+    error). Guards against bumping a chart to a version the image registry has
+    not published yet (upstream release out before the container image, a
+    registry that lags, or a registry/repo mismatch) -- which produces an
+    ErrImagePull and a pod that never starts.
+    """
+    accept = ", ".join([
+        "application/vnd.oci.image.index.v1+json",
+        "application/vnd.docker.distribution.manifest.list.v2+json",
+        "application/vnd.docker.distribution.manifest.v2+json",
+        "application/vnd.oci.image.manifest.v1+json",
+    ])
+    try:
+        if image_repo.startswith("ghcr.io/"):
+            path = image_repo[len("ghcr.io/"):]
+            tok = json.loads(urllib.request.urlopen(
+                f"https://ghcr.io/token?scope=repository:{path}:pull", timeout=15).read())["token"]
+            url = f"https://ghcr.io/v2/{path}/manifests/{tag}"
+            hdr = {"Authorization": f"Bearer {tok}", "Accept": accept}
+        elif image_repo.startswith(("oci.", "http")):
+            host = image_repo.split("/")[0]
+            path = image_repo[len(host) + 1:]
+            url = f"https://{host}/v2/{path}/manifests/{tag}"
+            hdr = {"Accept": accept}
+        else:  # docker hub (docker.io/x or bare owner/image)
+            path = image_repo[len("docker.io/"):] if image_repo.startswith("docker.io/") else image_repo
+            if "/" not in path:
+                path = "library/" + path
+            tok = json.loads(urllib.request.urlopen(
+                f"https://auth.docker.io/token?service=registry.docker.io&scope=repository:{path}:pull",
+                timeout=15).read())["token"]
+            url = f"https://registry-1.docker.io/v2/{path}/manifests/{tag}"
+            hdr = {"Authorization": f"Bearer {tok}", "Accept": accept}
+        urllib.request.urlopen(urllib.request.Request(url, method="GET", headers=hdr), timeout=15)
+        return True
+    except urllib.error.HTTPError as e:
+        return False if e.code in (404, 401) else None
+    except Exception:
+        return None
+
+
 # ── Chart manipulation ───────────────────────────────────────────────────────
 
 def get_current_version_info(app_path):
@@ -383,6 +427,13 @@ def update_app(app_config, dry_run=False):
         return None, None
 
     log(f"{name}: {current_app_version} -> {latest_version}")
+
+    # Guard: don't bump to a version whose image isn't published yet (avoids
+    # ErrImagePull / pods that never start). None = lookup error -> proceed.
+    probe_tag = app_config.get("tag_format", "{version}").format(version=latest_version)
+    if image_exists(app_config["image_repo"], probe_tag) is False:
+        log(f"{name}: image {app_config['image_repo']}:{probe_tag} not published yet; skipping", "WARN")
+        return None, None
 
     if dry_run:
         return name, latest_version
