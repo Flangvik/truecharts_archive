@@ -102,12 +102,15 @@ APPS = [
         "github_repo": "Ombi-app/Ombi",
     },
     {
+        # home-operations publishes its own sabnzbd tags; query the registry
+        # directly (same as sonarr/qbittorrent) instead of the GitHub release.
         "name": "sabnzbd",
         "path": "stable/sabnzbd",
         "image_repo": "ghcr.io/home-operations/sabnzbd",
         "tag_format": "{version}",
-        "version_source": "github_release",
-        "github_repo": "sabnzbd/sabnzbd",
+        "version_source": "ghcr_tags",
+        "ghcr_repo": "home-operations/sabnzbd",
+        "tag_pattern": r"^\d+\.\d+\.\d+$",
     },
     {
         "name": "flaresolverr",
