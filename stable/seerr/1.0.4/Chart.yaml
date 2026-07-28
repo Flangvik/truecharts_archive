@@ -1,0 +1,38 @@
+annotations:
+  truecharts.org/category: media
+  truecharts.org/max_helm_version: "3.14"
+  truecharts.org/min_helm_version: "3.11"
+  truecharts.org/train: stable
+apiVersion: v2
+appVersion: 3.4.0
+dependencies:
+- name: common
+  version: 23.0.10
+  repository: oci://tccr.io/truecharts
+  condition: ""
+  alias: ""
+  tags: []
+  import-values: []
+deprecated: false
+description: A media request manager for Jellyfin, Plex, and Emby with Sonarr and Radarr integration
+home: https://truecharts.org/charts/stable/seerr
+icon: https://truecharts.org/img/hotlink-ok/chart-icons/seerr.webp
+keywords:
+- seerr
+- plex
+- jellyfin
+- emby
+- sonarr
+- radarr
+- requests
+kubeVersion: '>=1.24.0-0'
+maintainers:
+- name: TrueCharts
+  email: info@truecharts.org
+  url: https://truecharts.org
+name: seerr
+sources:
+- https://github.com/seerr-team/seerr
+- https://hub.docker.com/r/seerr/seerr
+type: application
+version: 1.0.4

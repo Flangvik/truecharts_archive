@@ -1,0 +1,27 @@
+image:
+  repository: "seerr/seerr"
+  pullPolicy: "IfNotPresent"
+  tag: "v3.4.0@sha256:d206d9e4056bb90178297df58047791196e7721e6dc19384579b0530702fe086"
+service:
+  main:
+    ports:
+      main:
+        port: 5056
+        targetPort: 5055
+persistence:
+  config:
+    enabled: true
+    mountPath: "/app/config"
+portal:
+  open:
+    enabled: true
+securityContext:
+  container:
+    readOnlyRootFilesystem: false
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          env:
+            LOG_LEVEL: info
