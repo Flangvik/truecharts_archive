@@ -1,0 +1,52 @@
+image:
+  repository: docker.io/syncthing/syncthing
+  pullPolicy: IfNotPresent
+  tag: "2.1.3@sha256:8c8ff37ab6aa8be23b700648a90fa9412e214852e9fd6ea8477c8334792daec0"
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          probes:
+            liveness:
+              path: /rest/noauth/health
+            readiness:
+              path: /rest/noauth/health
+            startup:
+              path: /rest/noauth/health
+service:
+  main:
+    ports:
+      main:
+        port: 8384
+        targetPort: 8384
+  listeners:
+    enabled: true
+    ports:
+      tcp:
+        enabled: true
+        port: 22000
+        targetPort: 22000
+  listeners-udp:
+    enabled: true
+    ports:
+      udp:
+        enabled: true
+        port: 22000
+        targetPort: 22000
+        protocol: udp
+  discovery:
+    enabled: true
+    ports:
+      discovery:
+        enabled: true
+        port: 21027
+        targetPort: 21027
+        protocol: udp
+persistence:
+  config:
+    enabled: true
+    mountPath: "/var/syncthing"
+portal:
+  open:
+    enabled: true
