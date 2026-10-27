@@ -151,6 +151,32 @@ APPS = [
         "github_repo": "Threadfin/Threadfin",
     },
     {
+        "name": "home-assistant",
+        "path": "stable/home-assistant",
+        "image_repo": "docker.io/homeassistant/home-assistant",
+        "tag_format": "{version}",
+        "version_source": "github_release",
+        "github_repo": "home-assistant/core",
+    },
+    {
+        "name": "prowlarr",
+        "path": "stable/prowlarr",
+        "image_repo": "ghcr.io/home-operations/prowlarr",
+        "tag_format": "{version}",
+        "version_source": "ghcr_tags",
+        "ghcr_repo": "home-operations/prowlarr",
+        "tag_pattern": r"^\d+\.\d+\.\d+\.\d+$",
+    },
+    {
+        "name": "radarr",
+        "path": "stable/radarr",
+        "image_repo": "ghcr.io/home-operations/radarr",
+        "tag_format": "{version}",
+        "version_source": "ghcr_tags",
+        "ghcr_repo": "home-operations/radarr",
+        "tag_pattern": r"^\d+\.\d+\.\d+\.\d+$",
+    },
+    {
         # qBittorrent's chart runs the rootless ghcr.io/home-operations image
         # (that's what the working install uses). The old oci.trueforge.org
         # registry lags upstream (e.g. missing 5.2.2), so upgrading to the latest
