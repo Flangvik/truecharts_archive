@@ -1,0 +1,30 @@
+image:
+  repository: "ghcr.io/tautulli/tautulli"
+  pullPolicy: "IfNotPresent"
+  tag: "v2.19.1@sha256:239cd6dbc429a0eb441bdf88a7a015871e2d4d6e02b6e6039af30c0487528a8e"
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          command:
+          - python
+          - Tautulli.py
+          args:
+          - --config
+          - /config/config.ini
+          - --datadir
+          - /config
+service:
+  main:
+    ports:
+      main:
+        port: 8181
+        targetPort: 8181
+persistence:
+  config:
+    enabled: true
+    mountPath: "/config"
+portal:
+  open:
+    enabled: true
