@@ -126,6 +126,9 @@ APPS = [
         # must start as root and breaks the chart's non-root securityContext).
         # home-operations tags by its own build number, so query the registry
         # directly (same approach as plex) instead of the GitHub release version.
+        # NOTE: tracks home-operations' build tags, which follow Sonarr's v5
+        # pre-release line (the install's DB is already migrated to v5, so a
+        # stable-only v4 source would be a downgrade).
         "name": "sonarr",
         "path": "stable/sonarr",
         "image_repo": "ghcr.io/home-operations/sonarr",
@@ -159,22 +162,37 @@ APPS = [
         "github_repo": "home-assistant/core",
     },
     {
+        # Stable channel only: home-operations' ghcr tags also include
+        # develop/pre-release builds (e.g. radarr 7.x, prowlarr 3.x betas), so
+        # take the version from the latest *stable* GitHub release; the
+        # image_exists() guard then confirms home-operations published it.
         "name": "prowlarr",
         "path": "stable/prowlarr",
         "image_repo": "ghcr.io/home-operations/prowlarr",
         "tag_format": "{version}",
-        "version_source": "ghcr_tags",
-        "ghcr_repo": "home-operations/prowlarr",
-        "tag_pattern": r"^\d+\.\d+\.\d+\.\d+$",
+        "version_source": "github_release",
+        "github_repo": "Prowlarr/Prowlarr",
     },
     {
+        # Stable channel only: home-operations' ghcr tags also include
+        # develop/pre-release builds (e.g. radarr 7.x, prowlarr 3.x betas), so
+        # take the version from the latest *stable* GitHub release; the
+        # image_exists() guard then confirms home-operations published it.
         "name": "radarr",
         "path": "stable/radarr",
         "image_repo": "ghcr.io/home-operations/radarr",
         "tag_format": "{version}",
-        "version_source": "ghcr_tags",
-        "ghcr_repo": "home-operations/radarr",
-        "tag_pattern": r"^\d+\.\d+\.\d+\.\d+$",
+        "version_source": "github_release",
+        "github_repo": "Radarr/Radarr",
+    },
+    {
+        "name": "homebridge",
+        "path": "stable/homebridge",
+        "image_repo": "docker.io/homebridge/homebridge",
+        "tag_format": "{version}",
+        "version_source": "dockerhub_tags",
+        "dockerhub_repo": "homebridge/homebridge",
+        "tag_pattern": r"^\d{4}-\d{2}-\d{2}$",
     },
     {
         # qBittorrent's chart runs the rootless ghcr.io/home-operations image
@@ -248,12 +266,21 @@ def get_latest_ghcr_tag(repo, pattern):
         with urllib.request.urlopen(token_url, timeout=15) as resp:
             token = json.loads(resp.read())["token"]
 
-        req = urllib.request.Request(
-            f"https://ghcr.io/v2/{repo}/tags/list",
-            headers={"Authorization": f"Bearer {token}"},
-        )
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            tags = json.loads(resp.read()).get("tags", [])
+        # GHCR pages tags/list at 100 entries and returns the rest via a Link
+        # header. Without following it, repos with >100 tags (sonarr, radarr,
+        # prowlarr) silently stop updating at whatever is on page 1.
+        tags = []
+        url = f"https://ghcr.io/v2/{repo}/tags/list?n=1000"
+        for _ in range(50):
+            req = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                tags += json.loads(resp.read()).get("tags", []) or []
+                link = resp.headers.get("Link", "")
+            m = re.search(r"<([^>]+)>;\s*rel=\"next\"", link)
+            if not m:
+                break
+            nxt = m.group(1)
+            url = nxt if nxt.startswith("http") else "https://ghcr.io" + nxt
 
         regex = re.compile(pattern)
         version_tags = [t for t in tags if regex.match(t)]
@@ -270,6 +297,26 @@ def get_latest_ghcr_tag(repo, pattern):
         return None
 
 
+def get_latest_dockerhub_tag(repo, pattern):
+    """Newest Docker Hub tag matching pattern (sorted numerically)."""
+    try:
+        regex = re.compile(pattern)
+        tags, url = [], f"https://hub.docker.com/v2/repositories/{repo}/tags?page_size=100&ordering=last_updated"
+        for _ in range(3):
+            with urllib.request.urlopen(url, timeout=15) as resp:
+                data = json.loads(resp.read())
+            tags += [t["name"] for t in data.get("results", []) if regex.match(t["name"])]
+            url = data.get("next")
+            if not url:
+                break
+        if not tags:
+            return None
+        return max(tags, key=lambda v: [int(x) for x in re.findall(r"\d+", v)])
+    except Exception as e:
+        log(f"Docker Hub tag lookup failed for {repo}: {e}", "ERROR")
+        return None
+
+
 def get_latest_version(app_config):
     """Get the latest upstream version for an app."""
     source = app_config.get("version_source", "github_release")
@@ -281,6 +328,8 @@ def get_latest_version(app_config):
         return get_latest_github_tag(app_config["github_repo"], prefix)
     elif source == "ghcr_tags":
         return get_latest_ghcr_tag(app_config["ghcr_repo"], app_config["tag_pattern"])
+    elif source == "dockerhub_tags":
+        return get_latest_dockerhub_tag(app_config["dockerhub_repo"], app_config["tag_pattern"])
     return None
 
 
@@ -453,6 +502,12 @@ def update_app(app_config, dry_run=False):
 
     if latest_version == current_app_version:
         log(f"{name}: up to date ({current_app_version})")
+        return None, None
+
+    def _num(v):
+        return [int(x) for x in re.findall(r"\d+", str(v))]
+    if _num(latest_version) < _num(current_app_version):
+        log(f"{name}: upstream {latest_version} is older than current {current_app_version}; not downgrading", "WARN")
         return None, None
 
     log(f"{name}: {current_app_version} -> {latest_version}")
