@@ -532,7 +532,7 @@ def update_app(app_config, dry_run=False):
     chart_file = new_version_dir / "Chart.yaml"
     chart_text = chart_file.read_text()
     chart_text = re.sub(
-        r"^(appVersion:\s*).*$", rf"\g<1>{latest_version}",
+        r"^(appVersion:\s*).*$", rf'\g<1>"{latest_version}"',  # quoted: date-like versions (homebridge) must stay strings
         chart_text, count=1, flags=re.MULTILINE,
     )
     chart_text = re.sub(
