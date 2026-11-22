@@ -1,0 +1,30 @@
+image:
+  repository: "linuxserver/jackett"
+  pullPolicy: "IfNotPresent"
+  tag: "0.25.24@sha256:43933b53f09c01339348afcb2898c3436b26bb87d690b42458b45a2b369de875"
+service:
+  main:
+    ports:
+      main:
+        protocol: http
+        targetPort: 9117
+        port: 9117
+workload:
+  main:
+    podSpec:
+      containers:
+        main:
+          probes:
+            liveness:
+              path: "/health"
+            readiness:
+              path: "/health"
+            startup:
+              path: "/health"
+persistence:
+  config:
+    enabled: true
+    mountPath: "/config"
+portal:
+  open:
+    enabled: true
